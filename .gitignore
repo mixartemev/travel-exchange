@@ -1,0 +1,4 @@
+cookies.txt
+.idea
+# Project exclude paths
+/venv/
