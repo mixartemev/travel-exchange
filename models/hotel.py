@@ -11,7 +11,6 @@ class Hotel(Base):
     rating = Column(DECIMAL(7, 6))
     airport = Column(SmallInteger)
     beach = Column(SmallInteger)
-    near_beach = Column(Boolean)
     beach_line = Column(SmallInteger)
     beach_owner = Column(Boolean)
     popular = Column(Boolean)
@@ -25,10 +24,10 @@ class Hotel(Base):
             name: str,
             resort: int,
             country: int,
+            category: int,
             rating: float,
             airport: int,
             beach: int,
-            near_beach: bool,
             beach_line: int,
             beach_owner: bool,
             popular: bool,
@@ -38,10 +37,10 @@ class Hotel(Base):
         self.name = name
         self.resort = resort
         self.country = country
+        self.category = category
         self.rating = rating
         self.airport = airport
         self.beach = beach
-        self.near_beach = near_beach
         self.beach_line = beach_line
         self.beach_owner = beach_owner
         self.popular = popular

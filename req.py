@@ -11,7 +11,7 @@ variants = [
         'touristGroup[kids]': 0,
         'touristGroup[infants]': 0,
         'meals[]': 2,
-        'limit': 10,
+        'limit': 100,
     }
 ]
 COMMON_URL = "https://inventory-app.travelata.ru/tourProduct/search"
