@@ -31,7 +31,5 @@ def offer(raw_dict: dict) -> tuple:
             e['hotel'],
             e['operator']['id'],
             e['room']['name'],
-            e['hotelAvailable'],
-            e['isLessTicketsQty'],
             e['sortRate']
         )
