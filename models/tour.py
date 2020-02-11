@@ -21,8 +21,6 @@ class Tour(Base):
     hotel_id = Column(Integer, ForeignKey('hotels.idd'))
     operator_id = Column(SmallInteger)
     room = Column(String)
-    hotel_available = Column(SmallInteger)
-    less = Column(Boolean)
     rate = Column(DECIMAL(7, 6))
     created = Column(DateTime, default=func.now())
     updated = Column(DateTime, default=func.now(), onupdate=func.now())
@@ -42,8 +40,6 @@ class Tour(Base):
             hotel_id: int,
             operator_id: int,
             room: str,
-            hotel_available: int,
-            less: bool,
             rate: float
     ):
         self.identity = identity
@@ -57,8 +53,6 @@ class Tour(Base):
         self.hotel_id = hotel_id
         self.operator_id = operator_id
         self.room = room
-        self.hotel_available = hotel_available
-        self.less = less
         self.rate = rate
 
     def link(self):
