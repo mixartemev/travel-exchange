@@ -1,3 +1,5 @@
+from sqlalchemy import func
+
 from models import *
 
 operators = {
@@ -22,6 +24,8 @@ class Tour(Base):
     hotel_available = Column(SmallInteger)
     less = Column(Boolean)
     rate = Column(DECIMAL(7, 6))
+    created = Column(DateTime, default=func.now())
+    updated = Column(DateTime, default=func.now(), onupdate=func.now())
 
     hotel = relationship("Hotel", back_populates="offers")
 
@@ -56,3 +60,6 @@ class Tour(Base):
         self.hotel_available = hotel_available
         self.less = less
         self.rate = rate
+
+    def link(self):
+        return 'https://travelata.ru/hotel/{}/tourPage?identity={}'.format(self.hotel_id, self.identity)

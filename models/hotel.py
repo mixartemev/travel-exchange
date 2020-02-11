@@ -46,3 +46,6 @@ class Hotel(Base):
         self.beach_owner = beach_owner
         self.popular = popular
         self.children = children
+
+    def link(self):
+        return 'https://travelata.ru/goto/hotel/{}'.format(self.idd)
