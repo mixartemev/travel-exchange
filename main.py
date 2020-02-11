@@ -1,132 +1,30 @@
-import time
-from datetime import date
+# import time
+# from datetime import date
+
+from req import make as make_request
 
 from models.tour import Tour
+from models.hotel import Hotel
 
-
-
-
-# from models.historyPrice import HistoryPrice
-# from models.historyPromo import HistoryPromo
-# from models.mcityOffer import McityOffer
-# from models.Offer import Offer
-# from models.phone import Phone
-# from models.user import User
-# from userConverter import userConvert
-#
-import variants
-# from db import session
-from req import make as make_request
-# from converter import convert
-# from models.bc import Bc
-# from models.house import House
-# from models.location import Location
-# from models.newbuilding import Newbuilding
-# import csv
-#
-# with open('temp/locations.tsv') as tsvfile:
-#     reader = csv.reader(tsvfile, delimiter='\t')
-#     for row in reader:
-#         params = tuple(row)
-#         session.merge(Location(*params))
-#
-# with open('temp/newbuildings.tsv') as tsvfile:
-#     reader = csv.reader(tsvfile, delimiter='\t')
-#     for row in reader:
-#         params = tuple(row)
-#         session.merge(Newbuilding(*params))
-#
-# with open('temp/houses.tsv') as tsvfile:
-#     reader = csv.reader(tsvfile, delimiter='\t')
-#     for row in reader:
-#         params = tuple(row)
-#         session.merge(House(*params))
-#
-# with open('temp/bc.tsv') as tsvfile:
-#     reader = csv.reader(tsvfile, delimiter='\t')
-#     for row in reader:
-#         if row[3]:
-#             if not session.query(Bc).get(row[3]):
-#                 continue
-#         params = tuple(row)
-#         session.merge(Bc(*params))
-# session.commit()
-from req import make as make_request
+from db import session
+import converter
 
 
 def process():
-    while True:
-        result = make_request()['result']
+    result = make_request()['result']
 
-        if 'error' in result:
-            exit()
+    if 'error' in result:
+        exit()
 
-        tour: list = result['tourProducts']
-        hotels: list = result['hotels']
-        scanned: list = result['scannedTours']
+    # scanned: list = result['scannedTours']
 
-        for e in userConvert(data['all_agents']):
-            session.merge(User(*e))
-            for phone in e[-1]:
-                session.merge(Phone(e[0], phone))
+    for e in converter.hotel(result['hotels']):
+        session.merge(Hotel(*e))
+    session.commit()
 
-        mc_count = 0
-        ok = True
-
-        for e in convert(res):
-            if e['offer'][9] not in ['dailyFlat', 'warehouse']:
-                offer: Offer = session.query(Offer).get(e['offer'][0])
-                userId = e['offer'][1]
-                if not session.query(User).get(userId):
-                    print('no user {}'.format(userId))
-                    session.merge(User(userId, 'Anonimus', date.today().isoformat(), None, None, None, None, 5, None))
-
-                session.merge(Offer(*e['offer']))
-
-                stats_exists = offer and offer.stats and offer.stats[-1].date == date.today()
-                if e['statsDaily'][1] is None or e['statsDaily'][1] is None:
-                    print(offer_type, deal_type, current_page, 'Stats None')
-                    ok = False
-                    time.sleep(3)
-                    break
-                if not stats_exists:
-                    session.merge(StatsDaily(*e['statsDaily']))
-                elif stats_exists and (offer.stats[-1].stats_daily is None or offer.stats[-1].stats_daily <
-                                       e['statsDaily'][2]):  # and e['statsDaily'][2] is not None
-                    session.query(StatsDaily) \
-                        .filter_by(id=e['statsDaily'][0], date=date.today()) \
-                        .update({"stats_total": e['statsDaily'][1], "stats_daily": e['statsDaily'][2]})
-
-                if e['offer'][1] == 9383110:
-                    mc_count += 1
-                    session.merge(McityOffer(*e['mcityOffer']))
-
-                hp = e['historyPromo']
-                if offer and not offer.promos:
-                    print("Obj {} hasn't prices?".format(offer.id))
-                if not (offer and offer.promos and offer.promos[-1].services == hp[1]):
-                    session.add(HistoryPromo(*hp))
-
-                if e['historyPrice'] is None:
-                    print(offer_type, deal_type, current_page, 'Price None')
-                    continue
-                for p in e['historyPrice']:
-                    h = HistoryPrice(*p)
-                    c = session.query(HistoryPrice).filter_by(id=h.id, time=h.time).count()
-                    if not c:
-                        session.merge(h)
-
-        if ok:
-            session.commit()
-            current_page += 1
-            delay = randint(3, 10)
-            length = res.__len__()
-            print("{0} {1} {2} (inc {3} mcity) received.\nWaiting {4} seconds..".format(
-                length, deal_type, offer_type, mc_count, delay
-            ))
-            time.sleep(delay)
-            if length < 50:
-                break  # Объявлений больше нет -> съёбки
+    for e in converter.offer(result['tourProducts']):
+        session.merge(Tour(*e))
+    session.commit()
 
 
 def main():

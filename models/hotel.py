@@ -1,12 +1,10 @@
-from sqlalchemy.orm import backref
 from models import *
-from datetime import datetime
 
 
 class Hotel(Base):
     __tablename__ = 'hotels'
-    id = Column(Integer, primary_key=True)
-    name = Column(String, unique=True)
+    idd = Column(Integer, primary_key=True)
+    name = Column(String)  # , unique=True)
     resort = Column(SmallInteger)
     country = Column(SmallInteger)
     category = Column(SmallInteger)
@@ -18,25 +16,33 @@ class Hotel(Base):
     beach_owner = Column(Boolean)
     popular = Column(Boolean)
     children = Column(Boolean)
-    reviews = Column(SmallInteger)
-    # meal = Column(Enum('RO', 'BB', 'HB', 'FB', 'AI', 'UAI'))
-    checkin = Column(Date)
-    hotel_id = Column(Integer, ForeignKey('hotels.id'))
-    operator_id = Column(SmallInteger)
-    room = Column(Enum('ROH'))
-    available = Column(Boolean)
-    less = Column(Boolean)
 
-    offers = relationship("Offer", back_populates="bc")
-    mcityOffers = relationship("McityOffer", back_populates="bc")
-    # children = relationship("Bc", back_populates="parent")
-    # parent = relationship("Bc", remote_side=[id],  back_populates="children")
-    children = relationship("Bc", backref=backref('parent', remote_side=[id]))
+    offers = relationship("Tour", back_populates="hotel")
 
-    def __init__(self, id: int, typ: str, name: str, parent_id, address: str, editDate):
-        self.id = id
-        self.typ = typ
+    def __init__(
+            self,
+            idd: int,
+            name: str,
+            resort: int,
+            country: int,
+            rating: float,
+            airport: int,
+            beach: int,
+            near_beach: bool,
+            beach_line: int,
+            beach_owner: bool,
+            popular: bool,
+            children: bool,
+    ):
+        self.idd = idd
         self.name = name
-        self.parent_id = parent_id if parent_id else None
-        self.address = address
-        self.editDate = datetime.strptime(editDate, "%d.%m.%Y").date()
+        self.resort = resort
+        self.country = country
+        self.rating = rating
+        self.airport = airport
+        self.beach = beach
+        self.near_beach = near_beach
+        self.beach_line = beach_line
+        self.beach_owner = beach_owner
+        self.popular = popular
+        self.children = children
