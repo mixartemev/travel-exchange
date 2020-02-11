@@ -10,7 +10,7 @@ variants = [
         'touristGroup[adults]': 2,
         'touristGroup[kids]': 0,
         'touristGroup[infants]': 0,
-        'meals[]': 2,
+        # 'meals[]': 2,
         'limit': 100,
     }
 ]

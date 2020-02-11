@@ -1,5 +1,4 @@
 from sqlalchemy import func
-
 from models import *
 
 operators = {
@@ -26,6 +25,8 @@ class Tour(Base):
     updated = Column(DateTime, default=func.now(), onupdate=func.now())
 
     hotel = relationship("Hotel", back_populates="offers")
+
+    win = relationship("Record", back_populates="winner")
 
     def __init__(
             self,

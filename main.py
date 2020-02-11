@@ -1,10 +1,8 @@
-# import time
-# from datetime import date
-
 from req import make as make_request
 
-from models.tour import Tour
 from models.hotel import Hotel
+from models.tour import Tour
+from models.record import Record
 
 from db import session
 import converter
